@@ -20,7 +20,38 @@ Use this command in the root folder of the project:
 $ npm install
 ```
 
-## Step 3: Run the app and enjoy
+## Step 3: Edit the folder id where the file will go in your drive
+
+Select the folder id from the url of your folder.
+
+- Go to your drive account
+- Open the desired folder
+- Grab the id inside the url
+
+``` sh
+https://drive.google.com/drive/folders/hereistheid
+```
+
+- Then edit app.js and replace the folderid variable (line 12)
+
+``` js
+const folderId = '1L8zMRN7lH332BzazlCUyRa-QWYG2_cEy';
+```
+
+If you get an error like :
+
+``` sh
+errors:
+   [ { domain: 'global',
+       reason: 'notFound',
+       message: 'File not found: 1L8zMRN7lH332BzazlCUyRa-QWYG2_cEys.',
+       locationType: 'parameter',
+       location: 'fileId' } ]
+```
+
+This inform you that your folderid is wrong.
+
+## Step 4: Run the app and enjoy
 
 Now simply run this command and send your file to the data folder:
 

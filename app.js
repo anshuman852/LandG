@@ -4,10 +4,12 @@ const readline = require('readline');
 const { google } = require('googleapis');
 const mime = require('mime-types');
 const CronJob = require('cron').CronJob;
-require('console-stamp')(console, 'HH:MM:ss.l');
+const cstamp = require('console-stamp')(console, 'HH:MM:ss.l');
 
 const SCOPES = ['https://www.googleapis.com/auth/drive'];
 const TOKEN_PATH = 'token.json';
+
+const folderId = '1L8zMRN7lH332BzazlCUyRa-QWYG2_cEy';
 
 function main(){
   try { fs.mkdirSync(path.resolve('./data')) } catch (err) { if (err.code !== 'EEXIST') throw err }
@@ -22,10 +24,11 @@ function main(){
         authorize(JSON.parse(content), function(auth){
 
           const drive = google.drive({version: 'v3', auth});
-          const fileMetadata = { 'name': file };
+          const fileMetadata = { 'name': file, parents: [folderId] };
           drive.files.create({
             resource: fileMetadata,
-            media: media
+            media: media,
+            fields: 'id'
           }, (err, f) => {
             if (err) {
               console.error(err);
