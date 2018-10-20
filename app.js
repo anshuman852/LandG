@@ -3,10 +3,8 @@ const path = require('path')
 const readline = require('readline');
 const { google } = require('googleapis');
 const mime = require('mime-types');
-
-let fsWait = false;
-let media = null;
-let fileTitle = null;
+const CronJob = require('cron').CronJob;
+require('console-stamp')(console, 'HH:MM:ss.l');
 
 const SCOPES = ['https://www.googleapis.com/auth/drive'];
 const TOKEN_PATH = 'token.json';
@@ -14,48 +12,36 @@ const TOKEN_PATH = 'token.json';
 function main(){
   try { fs.mkdirSync(path.resolve('./data')) } catch (err) { if (err.code !== 'EEXIST') throw err }
 
-  console.log('Watching for file changes on data.');
-  fs.watch('data', (event, filename) => {
-    if (filename) {
-      if (fsWait) return;
-      fsWait = setTimeout(() => {
-        fsWait = false;
-        try {
-          if(fs.existsSync('data/' + filename)){
-            console.log("File: " + filename);
-            media = { mimeType: mime.lookup('data/' + filename), body: fs.createReadStream('data/' + filename) };
-            fileTitle = filename;
-            fs.readFile('credentials.json', (err, content) => {
-              if (err) return console.log('Error loading client secret file:', err);
-              authorize(JSON.parse(content), uploadIt);
-            });
-          }
-        } catch (err) {
-          console.error(err);
-        }
-      }, 500);
-    } else {
-      console.log('Error, no file.');
-    }
-  });
-}
+  console.log('Checking data folder...');
+  fs.readdir('data', (err, files) => {
+    files.forEach(file => {
+      console.log(file);
+      let media = { mimeType: mime.lookup('data/' + file), body: fs.createReadStream('data/' + file) };
+      fs.readFile('credentials.json', (err, content) => {
+        if (err) return console.log('Error loading client secret file:', err);
+        authorize(JSON.parse(content), function(auth){
 
-function uploadIt(auth){
-  const drive = google.drive({version: 'v3', auth});
-  const fileMetadata = { 'name': fileTitle };
-  drive.files.create({
-    resource: fileMetadata,
-    media: media
-  }, (err, file) => {
-    if (err) {
-      console.error(err);
-    } else {
-      console.log('File uploaded.');
-      fs.unlink('data/' + fileTitle, (err) => {
-        if (err) throw err;
-        console.log('data/' + fileTitle + ' was deleted');
+          const drive = google.drive({version: 'v3', auth});
+          const fileMetadata = { 'name': file };
+          drive.files.create({
+            resource: fileMetadata,
+            media: media
+          }, (err, f) => {
+            if (err) {
+              console.error(err);
+            } else {
+              console.log('File uploaded.');
+              fs.unlink('data/' + file, (err) => {
+                if (err) throw err;
+                console.log('data/' + file + ' was deleted');
+              });
+            }
+          });
+
+        });
       });
-    }
+      console.log('done');
+    });
   });
 }
 
@@ -95,4 +81,15 @@ function getAccessToken(oAuth2Client, callback) {
   });
 }
 
-main();
+/**
+ * Cron ranges
+ * Seconds: 0-59
+ * Minutes: 0-59
+ * Hours: 0-23
+ * Day of Month: 1-31
+ * Months: 0-11 (Jan-Dec)
+ * Day of Week: 0-6 (Sun-Sat)
+ */
+new CronJob('*/10 * * * * *', function() {
+  main();
+}, null, true, 'America/Los_Angeles'); // The timezone doesn't change anything here.

@@ -10,6 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "console-stamp": "^0.2.7",
+    "cron": "^1.4.1",
     "fs": "0.0.1-security",
     "googleapis": "^34.0.0",
     "mime-types": "^2.1.21",
