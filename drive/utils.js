@@ -28,4 +28,29 @@ function createFolder (filePath, parent) {
   */
 }
 
+function getSharableLink (fileId) {
+  driveAuth.call((err, auth) => {
+    if (err) {
+      if (err) return reject(new Error('Failed to get OAuth client'))
+    }
+    const drive = google.drive({version: 'v3', auth});
+
+    drive.permissions.create({
+      fileId: fileId,
+      resource: {
+        role: 'reader',
+        type: 'anyone'
+      }
+    },
+    (err, res) => {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log('Link ->', 'https://drive.google.com/uc?id=' + fileId + '&export=download');
+      }
+    });
+  });
+}
+
 module.exports.createFolder = createFolder;
+module.exports.getSharableLink = getSharableLink;

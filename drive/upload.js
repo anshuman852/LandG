@@ -1,6 +1,7 @@
 const parseRange = require('http-range-parse');
 const driveAuth = require('./drive-auth.js');
 const request = require('request');
+const utils = require('./utils.js');
 const app = require('../app.js');
 const fs = require('fs');
 
@@ -91,7 +92,8 @@ function uploadGoogleDriveFile (parent, file) {
               } else { i++; }
             }
             if (fileId && fileId.length > 0) {
-              console.log('Upload complete');
+              console.log('Upload for the fileId ' + fileId + ' complete');
+              utils.getSharableLink(fileId);
               app.mRunningRemove();
               fs.unlink(file.filePath, (err) => { if (err) throw err; });
               return resolve(fileId);
