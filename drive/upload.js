@@ -1,6 +1,7 @@
 const parseRange = require('http-range-parse');
 const driveAuth = require('./drive-auth.js');
 const request = require('request');
+const app = require('../app.js');
 const fs = require('fs');
 
 function getChunks (filePath, start) {
@@ -91,6 +92,7 @@ function uploadGoogleDriveFile (parent, file) {
             }
             if (fileId && fileId.length > 0) {
               console.log('Upload complete');
+              app.mRunningRemove();
               fs.unlink(file.filePath, (err) => { if (err) throw err; });
               return resolve(fileId);
             } else { return reject(new Error('Uploaded and got invalid id for file ' + fileName)); }
