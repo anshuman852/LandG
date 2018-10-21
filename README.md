@@ -64,7 +64,7 @@ in the console to enter a code which will allow this app to push data to your
 google drive account. Simply follow what will be written on your terminal.
 
 
-## Tips
+## Tips (currently removed)
 
 - You can make shareable file link by adding 'share' without quote into your file name.
 
