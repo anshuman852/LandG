@@ -22,20 +22,15 @@ $ npm install
 
 ## Step 3: Edit the folder id where the file will go in your drive
 
-Select the folder id from the url of your folder.
+* Visit [Google Drive](https://drive.google.com).
+   * Create a new folder. The bot will upload files inside this folder.
+   * Open the folder.
+   * The URL will be something like `https://drive.google.com/drive/u/0/folders/012a_345bcdefghijk`. Copy the part after `folders/` (`012a_345bcdefghijk`). This is the `folderId` you need.
 
-- Go to your drive account
-- Open the desired folder
-- Grab the id inside the url
-
-``` sh
-https://drive.google.com/drive/folders/hereistheid
-```
-
-- Then edit app.js and replace the folderid variable (line 12)
+   * Then edit app.js and replace the folderid variable (line 12)
 
 ``` js
-const folderId = '1L8zMRN7lH332BzazlCUyRa-QWYG2_cEy';
+const folderId = '012a_345bcdefghijk';
 ```
 
 If you get an error like :
@@ -62,21 +57,6 @@ $ nodejs app.js
 On the first run, once an file is added to the data folder, you'll be asked
 in the console to enter a code which will allow this app to push data to your
 google drive account. Simply follow what will be written on your terminal.
-
-
-## Tips (currently removed)
-
-- You can make shareable file link by adding 'share' without quote into your file name.
-
-Private file:
-``` sh
-myPassword.txt
-```
-
-Public file:
-``` sh
-hackerDontWasteYourTime_share.txt
-```
 
 ## WARNING
 
